@@ -1,0 +1,391 @@
+.encabezado{
+    background: rgba(0, 113, 206, 1);
+    width: 100%;
+    height: 90px !important;
+    text-align: center;
+
+}
+
+.contenedor_formulario {
+    display: flex;
+    justify-content: center; /* Centra horizontalmente los elementos */
+    align-items: center; /* Centra verticalmente los elementos */
+   
+  }
+  .radioButtons{
+    display: flex;
+    justify-content: center; /* Centra horizontalmente los elementos */
+    align-items: center; /* Centra verticalmente los elementos */
+  }
+  .radioButtonsGroup{
+    display: flex;
+    justify-content: left; /* Centra horizontalmente los elementos */
+
+  }
+
+  .msjaceptacion{
+    width: 450px;
+    top: 286px;
+    left: 118px;
+    margin-bottom: 20px;
+  }
+  
+  .msjaceptacion p{
+    font-family: Gotham Rounded;
+    font-size: 120%;
+    font-weight: 325;
+    line-height: 17px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: rgba(10, 34, 64, 1);
+
+  }
+  
+
+  .aceptacion a{
+    text-decoration: underline;
+    color: inherit;
+    display: flex;
+    justify-content: center; /* Centra horizontalmente los elementos */
+    align-items: center;
+    margin-left: 5px;
+
+
+  }
+  .radioButtonsGroup{
+    display: flex;
+    justify-content: left; /* Centra horizontalmente los elementos */
+    width: 100%;
+  }
+  .radioButtonsLabel{
+    font-size: 14px !important;
+  }
+
+
+  @media (max-width: 320px) {
+    .msjaceptacion p {
+      font-size: 70%; /* Porcentaje de tamaño de fuente más pequeño para resoluciones de 320px o menos */
+    }
+    .msjaceptacion{
+        width: 240px;
+    }
+    .contenedor_aceptacion{
+        justify-content: center; /* Centra horizontalmente los elementos */
+        align-items: center; /* Centra verticalmente los elementos */
+    }
+    .msjaceptacionContainer{
+        display: flex;
+        justify-content: center; /* Centra horizontalmente los elementos */
+        align-items: center; /* Centra verticalmente los elementos */
+    }
+    .aceptacion p{
+        font-size: 10px !important;
+    }
+    .formularioMenores{
+        width: 260px !important;
+    }
+    .msjformulario p{
+        font-size: 70% !important;
+        margin-left: 10px !important;
+    }
+    .radioButtonsGroup{
+      display: flex;
+      justify-content: left; /* Centra horizontalmente los elementos */
+      width: 80%;
+    }
+    .radioButtonsLabel{
+      font-size: 12px !important;
+    }
+
+  }
+
+  @media (min-width: 321px) and (max-width: 480px) {
+    .msjaceptacion p {
+      font-size: 80%; /* Porcentaje de tamaño de fuente más pequeño para resoluciones de 320px o menos */
+    }
+    .msjaceptacion{
+        width: 240px;
+    }
+    .contenedor_aceptacion{
+        justify-content: center; /* Centra horizontalmente los elementos */
+        align-items: center; /* Centra verticalmente los elementos */
+    }
+    .msjaceptacionContainer{
+        display: flex;
+        justify-content: center; /* Centra horizontalmente los elementos */
+        align-items: center; /* Centra verticalmente los elementos */
+    }
+    .aceptacion p{
+        font-size: 10px !important;
+    }
+    .formularioMenores{
+        width: 260px !important;
+    }
+    .msjformulario p{
+        font-size: 70% !important;
+        margin-left: 10px !important;
+    }
+
+    .radioButtonsGroup{
+      display: flex;
+      justify-content: left; /* Centra horizontalmente los elementos */
+      width: 80%;
+    }
+    .radioButtonsGroup{
+      display: flex;
+      justify-content: left; /* Centra horizontalmente los elementos */
+      width: 80%;
+    }
+    .radioButtonsLabel{
+      font-size: 12px !important;
+    }
+
+  }
+
+  .msjformulario p{
+    font-family: Gotham Rounded;
+    font-size: 120%;
+    font-weight: 400;
+    line-height: 19px;
+    letter-spacing: 0.4300000071525574px;
+    text-align: justified;
+    color: rgba(10, 34, 64, 1);
+    font-weight: bold;
+
+  }
+  .formularioMenores{
+    background: rgba(217, 217, 217, 1);
+    width: 296px;
+    height: 225px;
+    top: 470px;
+    left: 152px;
+    border-radius: 6px;
+
+
+  }
+  .form-group label{
+    font-family: Gotham Rounded;
+    font-size: 12px;
+    font-weight: 350;
+    line-height: 14px;
+    letter-spacing: 0px;
+    text-align: left;
+    color: rgba(11, 34, 64, 1);
+    width: 100%;
+
+
+  }
+
+  .formularioMenores label
+  {
+    display: block;
+    
+  }
+  .formularioMenores input {
+    display: block;
+    margin-bottom: 10px; /* Agrega un margen inferior entre cada etiqueta y campo de entrada */
+    width: 100%;
+  }
+
+  .formularioMenoresform{
+    display: block;
+    justify-content: center; /* Centra horizontalmente los elementos */
+    align-items: center; /* Centra verticalmente los elementos */
+    width: 80%;
+   
+  }
+.formularioMenores
+{
+    display: flex;
+    justify-content: center; /* Centra horizontalmente los elementos */
+    align-items: center; /* Centra verticalmente los elementos */
+    margin-bottom: 15px;
+
+}
+
+.contenedorFormularioMenores{
+    display: flex;
+    justify-content: center; /* Centra horizontalmente los elementos */
+    align-items: center; /* Centra verticalmente los elementos */
+ 
+
+}
+
+/* Estilos para formulario adultos mayores */
+
+.contenedorFormularioAdultomayor{
+    display: flex;
+    justify-content: center; /* Centra horizontalmente los elementos */
+    align-items: center; /* Centra verticalmente los elementos */
+
+}
+.formularioAdultomayorform{
+    display: block;
+    justify-content: center; /* Centra horizontalmente los elementos */
+    align-items: center; /* Centra verticalmente los elementos */
+   width: 80%;
+  }
+
+.formularioAdultomayor{
+    background: rgba(217, 217, 217, 1);
+    width: 296px;
+    height: 225px;
+    top: 470px;
+    left: 152px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    
+
+}
+.formularioAdultomayor{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 15px;
+   
+  }
+
+
+  .form-group1{
+    width: 100%;
+    display: block;
+   
+  }
+
+  .form-group1 label{
+    font-family: Gotham Rounded;
+    font-size: 12px;
+    font-weight: 350;
+    line-height: 14px;
+    letter-spacing: 0px;
+    text-align: left;
+    color: rgba(11, 34, 64, 1);
+    width: 100%;
+
+  }
+
+  .formularioAdultomayor label
+  {
+    display: block;
+    
+  }
+
+  .formularioAdultomayor input {
+    display: block;
+    margin-bottom: 10px; /* Agrega un margen inferior entre cada etiqueta y campo de entrada */
+    width: 100%;
+  }
+
+  
+  
+
+
+  
+
+  .textoaceptacion{
+    font-family: Gotham Rounded;
+    font-size: 12px;
+    font-weight: 350;
+    line-height: 14px;
+    letter-spacing: 0em;
+    text-align: left;
+
+    color: rgba(10, 34, 64, 1);
+
+
+  }
+  .aceptacion{
+    display: flex;
+    justify-content: center; /* Centra horizontalmente los elementos */
+    align-items: center;
+  }
+  .aceptacion p{
+    font-family: Gotham Rounded;
+    font-size: 90%;
+    font-weight: 350;
+    line-height: 14px;
+    letter-spacing: 0em;
+    text-align: left;
+
+    color: rgba(10, 34, 64, 1);
+    display: flex;
+    align-items: center;
+
+    
+  }
+
+  .botonaceptacion{
+    width: 158px;
+    height: 32px;
+    top: 434px;
+    left: 218px;
+    padding: 8px 16px 8px 16px;
+    border-radius: 4px;
+    gap: 4px;
+    background: rgba(0, 113, 206, 1);
+    display: flex;
+    justify-content: center; /* Centra horizontalmente los elementos */
+    align-items: center;
+    border-style: none;
+
+
+  }
+
+  
+
+  .textobotonaceptacion{
+    font-family: Gotham Rounded;
+    font-size: 14px;
+    font-weight: 350;
+    line-height: 16px;
+    letter-spacing: 0em;
+    text-align: left;
+    color: rgba(255, 255, 255, 1);
+    padding: 0%;
+    margin: 0%;
+
+  }
+
+  .Contenedorbotonaceptacion{
+    display: flex;
+    justify-content: center; /* Centra horizontalmente los elementos */
+    align-items: center;
+    height: 100px;
+  }
+  
+  .banner img {
+    /* Ajustar la altura automáticamente para mantener la relación de aspecto original */
+    height: auto;
+    /* Establecer un ancho máximo para la imagen dentro del banner (opcional) */
+    max-width: 100%;
+
+  }
+
+  .botonaceptacion-disabled {
+    background-color: #e0e0e0; /* Agrega el color que desees para el botón deshabilitado */
+    cursor: not-allowed; /* Cambia el cursor cuando el botón está deshabilitado */
+    /* Agrega otros estilos específicos para el botón deshabilitado, si es necesario */
+  }
+  
+.banner_col{
+    margin: 0% ;
+    padding: 0%;
+}
+  /* Estilos para la clase "banner" */
+.banner {
+    /* Centrar la imagen horizontalmente */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 0%;
+    margin-right: 0%;
+    padding: 0%;
+    margin-bottom: 20px;
+    
+    max-width: 100%;
+    
+    
+    
+  }
+  
+  
