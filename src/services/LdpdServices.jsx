@@ -23,14 +23,14 @@ const LoginToken = async () => {
       method: 'POST',
       headers
     };
-    const response = await fetch('https://api.phantomx.com.ec/seguridad/v1/autenticacion/login', requestOptions);
+    const response = await fetch('https://api-phantomx.veris.com.ec/seguridad/v1/autenticacion/login', requestOptions);
 
     const data = await response.json();
     
 
     localStorage.setItem('token', data.data.idToken);
   
-    return data; // Retornar los datos
+    return data.data.idToken;
     
   } catch (error) {
     console.error(error);
@@ -55,7 +55,7 @@ const ConsultarPaciente = async (valorFiltro) => {
       method: 'GET',
       headers
     };
-    const url = `https://api.phantomx.com.ec/general/v1/pacientes/consulta_basica?tipoFiltro=${tipoFiltro}&page=${page}&perPage=${perPage}&valorFiltro=${valorFiltro}`;
+    const url = `https://api-phantomx.veris.com.ec/general/v1/pacientes/consulta_basica?tipoFiltro=${tipoFiltro}&page=${page}&perPage=${perPage}&valorFiltro=${valorFiltro}`;
     const response = await fetch(url, requestOptions);
     
    
@@ -91,7 +91,6 @@ const AceptarPoliticas = async (identificacionUsuario) => {
       
 
       const data = await response.json();
-      console.log(data);
       return data;
   } catch (error) {
       console.error(error);
@@ -100,8 +99,7 @@ const AceptarPoliticas = async (identificacionUsuario) => {
 };
 
 const persisteConfirmacionPoliticaRepresentante = async (datosRepresentante, valorFiltro) => {
-  console.log(datosRepresentante);
-  console.log(valorFiltro);
+  
   const usuarioCreacion = 'backendphantom';
   let cedulaRepresentado1 = '';
   if (datosRepresentante.cedulaRepresentado === '') {
@@ -110,7 +108,6 @@ const persisteConfirmacionPoliticaRepresentante = async (datosRepresentante, val
   {
     cedulaRepresentado1 = datosRepresentante.cedulaRepresentado;
   }
-  console.log(cedulaRepresentado1) 
   const headers = {
     'Accept': 'application/json',
     'Content-Type': 'application/json',
@@ -123,8 +120,8 @@ const persisteConfirmacionPoliticaRepresentante = async (datosRepresentante, val
     "cedulaRepresentado": cedulaRepresentado1,
     "aceptaPoliticas": true,
     "usuarioCreacion": usuarioCreacion,
-    // "parentezco": datosRepresentante.parentezco,
-    // "motivo": datosRepresentante.motivo,
+    "parentezco": datosRepresentante.parentezco,
+    "motivo": datosRepresentante.motivo,
   };
 
   const requestOptions = {
@@ -136,7 +133,6 @@ const persisteConfirmacionPoliticaRepresentante = async (datosRepresentante, val
   try {
     const response = await fetch('http://desa.goitsa.me:5679/digitales/v1/politicas/persisteConfirmacionPoliticaRepresentante', requestOptions);
     const data = await response.json();
-    console.log(data);
     return data; // Devolver los datos obtenidos
   } catch (error) {
     console.error(error);

@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { useParams } from 'react-router-dom';
 
 import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import logo from '../assets/logoVeris.png';
 import banner from '../assets/bannerVeris.jpg';
 import banner2 from '../assets/bannerVeris3.jpg';
@@ -9,14 +10,16 @@ import '../styles/formularioPrincipal.css';
 import { Container, Row, Col } from 'react-bootstrap';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch';
+import FormularioError from './FormularioError';
 import { styled } from '@mui/material/styles';
 import { Radio, RadioGroup,  Typography } from '@mui/material';
 import { ConsultarPaciente, LoginToken , AceptarPoliticas, persisteConfirmacionPoliticaRepresentante} from '../services/LdpdServices';
-
+import { Base64 } from 'js-base64';
 
 const FormularioPrincipal = () => {
   let { valorFiltro } = useParams();
   let {url} = useParams();
+
 
 
     const [switchChecked, setSwitchChecked] = useState(false);
@@ -45,14 +48,30 @@ const FormularioPrincipal = () => {
     
       useEffect(() => {
         
-        LoginToken();
-    
-        const fetchAndValidateAge = async () => {
-            const age = await ConsultarPacientes();
-            validarEdad(age);
+        //LoginToken();
+
+        const fetchToken = async () => {
+          const token = await LoginToken();
+          const age = await ConsultarPacientes(token);
+          if (age === 0) {
+            window.location.href = '/terminosypoliticas/error' ;
+          }
+          validarEdad(age);
+
         };
+
+        fetchToken();
+
+        base64ToString(url);
+        console.log(base64ToString(url));
+
+    
+        // const fetchAndValidateAge = async () => {
+        //     const age = await ConsultarPacientes();
+        //     validarEdad(age);
+        // };
         
-        fetchAndValidateAge();
+        // fetchAndValidateAge();
         // Verifica el tamaño de la pantalla al cargar la página
         checkWindowSize();
     
@@ -145,12 +164,20 @@ const FormularioPrincipal = () => {
       //  control de los radio buttons
 
       const [selectedValue, setSelectedValue] = useState('');
+      const [activarFormularioMayores, setActivarFormularioMayores] = useState(false);
 
       const handleChange = (event) => {
         setSelectedValue(event.target.value);
         
 
         setActivateSwitch(true);
+        if (event.target.value === 'option2') {
+          setActivarFormularioMayores(true);
+        }
+        else {
+          setActivarFormularioMayores(false);
+        }
+        
 
       };
 
@@ -158,21 +185,19 @@ const FormularioPrincipal = () => {
 
       // consumo de api para obtener datos del paciente
 
-      const [paciente, setPaciente] = useState([]);
       
       const ConsultarPacientes = async () => {
         try {
             const response = await ConsultarPaciente(valorFiltro);
-            setPaciente(response.data.rows);
-            console.log(response.data.rows);
-            localStorage.setItem( 'nombre',
-              response.data.rows[0].primerNombre);
-            // const nombreCompleto = response.data.rows[0].primerNombre;
-            // const primerNombre = nombreCompleto.split(" ")[0];
-            // console.log(primerNombre);
+            
+            
+            if (response.data.rows.length === 0) {
+                return 0;
+            }
+            
+            localStorage.setItem('nombre', response.data.rows[0].primerNombre);
             const birthDateString = response.data.rows[0].fechaNacimiento.split("/").reverse().join("/");
             const age = calculateAge(birthDateString); 
-            
     
             return age;
         } catch (error) {
@@ -180,15 +205,19 @@ const FormularioPrincipal = () => {
             throw error;
         }
     };
+    
 
 
     const recuperarPrimerNombre = () => {
       const nombreCompleto = localStorage.getItem('nombre');
-      const primerNombre = nombreCompleto.split(" ")[0];
-
-      return  primerNombre;
-    }
-
+  
+      if (!nombreCompleto) {
+          return;
+      }
+  
+      return nombreCompleto.split(" ")[0];
+  }
+  
     
 
       const calculateAge = (birthDateString) => {
@@ -202,8 +231,9 @@ const FormularioPrincipal = () => {
         return age;
       };
 
+      const [isDataFetch, setIsDataFetch] = useState(false);
+
       const validarEdad = (edad) => {
-        console.log(edad);
         if (edad < 18) {
             setIsMenor(true);
             setIsAdulto(false);
@@ -217,6 +247,7 @@ const FormularioPrincipal = () => {
             setIsMenor(false);
             setIsNormal(false);
         }
+        setIsDataFetch(true);
     };
 
     // consumo de api para aceptar politicas
@@ -224,7 +255,42 @@ const FormularioPrincipal = () => {
     const AceptarPoliticasprivacidad = async () => {
         try {
           const response = await AceptarPoliticas(valorFiltro);
-          console.log(response);
+        
+          if (response.code === 400) {
+            setMensajeError(response.message);
+            toast.error(response.message, {
+              position: "top-right",
+              autoClose: 1000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              style: {
+                fontSize: '11px' // Tamaño de letra deseado
+              }
+            });
+          }
+          else if (response.code === 200) {
+            toast.success('Datos enviados', {
+              position: "top-right",
+              autoClose: 1000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              style: {
+                fontSize: '11px' // Tamaño de letra deseado
+              }
+            });
+            const newWindow = window.open(setUrl
+              , '_blank', 'noopener,noreferrer')
+            window.close();
+          }
+
 
         } catch (error) {
           console.error(error);
@@ -238,13 +304,30 @@ const FormularioPrincipal = () => {
 
       const EnviarDatosMenor = async () => {
         try {
+          if (!formData.cedulaRepresentante) {
+            toast.error('Cédula del representante es requerida', {
+              position: "top-right",
+              autoClose: 1000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              style: {
+                fontSize: '11px' // Tamaño de letra deseado
+              }
+            });
+            return;
+          }
+          console.log('entro')
           const response = await persisteConfirmacionPoliticaRepresentante(formData, valorFiltro);
-          console.log(response);
+          
           if (response.code === 400) {
             setMensajeError(response.message);
-            toast.error('ok', {
+            toast.error(response.message, {
               position: "top-right",
-              autoClose: 2000,
+              autoClose: 1000,
               hideProgressBar: true,
               closeOnClick: true,
               pauseOnHover: true,
@@ -256,6 +339,7 @@ const FormularioPrincipal = () => {
               }
             });
           }
+          
 
         } catch (error) {
           console.error(error);
@@ -263,6 +347,57 @@ const FormularioPrincipal = () => {
         }
       };
 
+      const EnviarDatosAdultoMayor = async () => {
+        try {
+          
+          const response = await persisteConfirmacionPoliticaRepresentante(formData, valorFiltro);
+          console.log(response);
+          
+          if (response.code === 400) {
+            setMensajeError(response.message);
+            toast.error(response.message, {
+              position: "top-right",
+              autoClose: 1000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              style: {
+                fontSize: '11px' // Tamaño de letra deseado
+              }
+            });
+          }
+          else if (response.code === 200) {
+            console.log('entro')
+          }
+          
+
+        } catch (error) {
+          console.error(error);
+          throw error;
+        }
+      };
+
+      // base64ToString
+      const [setUrl, setSetUrl] = useState('');
+      const base64ToString = (url) => {
+
+        const url2 = 'https%3A%2F%2Fdesa.goitsa.me%2Fgoit-mail-analizador%2Fv1%2Faccess%2F0269e269-d737-4e58-9133-358129b0bd85%2FredirectAWS%2FidDetalleProgramacion%3DtestDaniel%26url%3Dhttps%3A%2F%2Fdesagoitsa-test.s3.amazonaws.com%2FAWStest%2Fprueba%2Fpruebas-goitimagenCelularPrueba5.png%26idAnalisis%3D1%26userId%3D09260611?identifierCNM=0269e269-d737-4e58-9133-358129b0bd85';
+
+        try {
+          let decodedUrl = decodeURIComponent(url);
+
+          setSetUrl(decodedUrl);
+
+            
+          return decodedUrl;
+        } catch (error) {
+            console.error('Error decodificando base64:', error);
+        }
+    };
+    
 
 
 
@@ -273,6 +408,7 @@ const FormularioPrincipal = () => {
 
 
       return (
+        
         <>
           <ToastContainer />
           <Container>
@@ -364,7 +500,7 @@ const FormularioPrincipal = () => {
                           <div className="Contenedorbotonaceptacion">
                           <button className={`botonaceptacion ${!switchChecked ? "botonaceptacion-disabled" : ""}`} 
                           type="submit" disabled={!switchChecked} form="formularioMenoresform" onClick={EnviarDatosMenor}>
-                              <p className="textobotonaceptacion">Descargar PDF</p>
+                              <p className="textobotonaceptacion">Descargar PDF m</p>
                           </button>
                           </div>
                       </React.Fragment>
@@ -383,72 +519,74 @@ const FormularioPrincipal = () => {
                         <>
                           <div className='radioButtons'>
                             <RadioGroup value={selectedValue} onChange={handleChange} className='radioButtonsGroup' >
-                              <FormControlLabel value="option1" control={<Radio />} label={<Typography className='radioButtonsLabel'>Confirmo que soy @Nombre@</Typography>} className='radioButtonsLabel' />
-                              <FormControlLabel value="option2" control={<Radio />} label={<Typography className='radioButtonsLabel'>Confirmo que soy el representante legal de @Nombre@</Typography>} className='radioButtonsLabel' />
+                              <FormControlLabel value="option1" control={<Radio />} label={<Typography className='radioButtonsLabel'>Confirmo que soy {recuperarPrimerNombre()} </Typography>} className='radioButtonsLabel' />
+                              <FormControlLabel value="option2" control={<Radio />} label={<Typography className='radioButtonsLabel'>Confirmo que soy el representante legal de {recuperarPrimerNombre()}</Typography>} className='radioButtonsLabel' />
                             </RadioGroup>
                           </div>
-                    
 
-                    
-                      
-                        <div className="msjformulario">
-                          <p>
-                              Por favor ingresa tus datos:
-                          </p>
-                        </div>
-                        <div className="contenedorFormularioAdultomayor">
-                      
-                          <div className="formularioAdultomayor">
-                            <form action="" className="formularioAdultomayorform">
-                              <div className="form-group1">
-                                <label htmlFor="nombre">Nombre</label>
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  id="nombre"
-                                  name="nombre"
-                                  value={formData.nombre}
-                                  onChange={handleChangeForm}
-                                />
+                          {activarFormularioMayores ? (
+                            <>
+                              <div className="msjformulario">
+                                <p>
+                                    Por favor ingresa tus datos:
+                                </p>
                               </div>
-                              <div className="form-group1">
-                                <label htmlFor="apellido">Apellido</label>
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  id="apellido"
-                                  name="apellido"
-                                  value={formData.apellido}
-                                  onChange={handleChangeForm}
-                                />
+                              <div className="contenedorFormularioAdultomayor">
+                            
+                                <div className="formularioAdultomayor">
+                                  <form action="" className="formularioAdultomayorform">
+                                    <div className="form-group1">
+                                      <label htmlFor="nombre">Nombre</label>
+                                      <input
+                                        type="text"
+                                        className="form-control"
+                                        id="nombre"
+                                        name="nombre"
+                                        value={formData.nombre}
+                                        onChange={handleChangeForm}
+                                      />
+                                    </div>
+                                    <div className="form-group1">
+                                      <label htmlFor="apellido">Apellido</label>
+                                      <input
+                                        type="text"
+                                        className="form-control"
+                                        id="apellido"
+                                        name="apellido"
+                                        value={formData.apellido}
+                                        onChange={handleChangeForm}
+                                      />
+                                    </div>
+                                    <div className="form-group1">
+                                      <label htmlFor="Parentezco">Parentezco</label>
+                                      <input
+                                        type="text"
+                                        className="form-control"
+                                        id="parentezco"
+                                        name="parentezco"
+                                        value={formData.parentezco}
+                                        onChange={handleChangeForm}
+                                      />
+                                    </div>
+                                    <div className="form-group1">
+                                      <label htmlFor="Motivo">
+                                        Motivo por el cual acepta las políticas en reemplazo de {recuperarPrimerNombre()}
+                                      </label>
+                                      <input
+                                        type="text"
+                                        className="form-control"
+                                        id="motivo"
+                                        name="motivo"
+                                        value={formData.motivo}
+                                        onChange={handleChangeForm}
+                                      />
+                                    </div>
+                                  </form>
+                                </div>
                               </div>
-                              <div className="form-group1">
-                                <label htmlFor="Parentezco">Parentezco</label>
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  id="parentezco"
-                                  name="parentezco"
-                                  value={formData.parentezco}
-                                  onChange={handleChangeForm}
-                                />
-                              </div>
-                              <div className="form-group1">
-                                <label htmlFor="Motivo">
-                                  Motivo por el cual acepta las políticas en reemplazo de {recuperarPrimerNombre()}
-                                </label>
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  id="motivo"
-                                  name="motivo"
-                                  value={formData.motivo}
-                                  onChange={handleChangeForm}
-                                />
-                              </div>
-                            </form>
-                          </div>
-                        </div>
+                            </>
+                          ) : null}
+
                         <div className="aceptacion">
                           <FormControlLabel
                             control={<IOSSwitch sx={{ m: 1 }} 
@@ -462,8 +600,8 @@ const FormularioPrincipal = () => {
                       </div>
                       <div className="Contenedorbotonaceptacion">
                         <button className={`botonaceptacion ${!switchChecked ? "botonaceptacion-disabled" : ""}`} 
-                        type="button" disabled={!switchChecked}  onClick={AceptarPoliticasprivacidad}>
-                            <p className="textobotonaceptacion">Descargar PDF</p>
+                        type="button" disabled={!switchChecked}  onClick={EnviarDatosAdultoMayor}>
+                            <p className="textobotonaceptacion">Descargar PDF a</p>
                         </button>
                       </div>
                       </>
