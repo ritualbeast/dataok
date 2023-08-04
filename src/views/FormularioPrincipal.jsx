@@ -286,9 +286,7 @@ const FormularioPrincipal = () => {
                 fontSize: '11px' // Tamaño de letra deseado
               }
             });
-            const newWindow = window.open(setUrl
-              , '_blank', 'noopener,noreferrer')
-            window.close();
+            window.location.href = setUrl;
           }
 
 
@@ -320,7 +318,6 @@ const FormularioPrincipal = () => {
             });
             return;
           }
-          console.log('entro')
           const response = await persisteConfirmacionPoliticaRepresentante(formData, valorFiltro);
           
           if (response.code === 400) {
@@ -338,6 +335,9 @@ const FormularioPrincipal = () => {
                 fontSize: '11px' // Tamaño de letra deseado
               }
             });
+          } else if (response.code === 200) {
+            console.log('entro')
+            // AceptarPoliticasprivacidad();
           }
           
 
@@ -350,6 +350,8 @@ const FormularioPrincipal = () => {
       const EnviarDatosAdultoMayor = async () => {
         try {
           
+          if (activarFormularioMayores) {
+
           const response = await persisteConfirmacionPoliticaRepresentante(formData, valorFiltro);
           console.log(response);
           
@@ -370,8 +372,14 @@ const FormularioPrincipal = () => {
             });
           }
           else if (response.code === 200) {
-            console.log('entro')
+            console.log('entro') 
+            // AceptarPoliticasprivacidad();
+
           }
+        } else {
+          console.log('entro a politicas')
+          // AceptarPoliticasprivacidad();
+        }
           
 
         } catch (error) {
@@ -384,10 +392,10 @@ const FormularioPrincipal = () => {
       const [setUrl, setSetUrl] = useState('');
       const base64ToString = (url) => {
 
-        const url2 = 'https%3A%2F%2Fdesa.goitsa.me%2Fgoit-mail-analizador%2Fv1%2Faccess%2F0269e269-d737-4e58-9133-358129b0bd85%2FredirectAWS%2FidDetalleProgramacion%3DtestDaniel%26url%3Dhttps%3A%2F%2Fdesagoitsa-test.s3.amazonaws.com%2FAWStest%2Fprueba%2Fpruebas-goitimagenCelularPrueba5.png%26idAnalisis%3D1%26userId%3D09260611?identifierCNM=0269e269-d737-4e58-9133-358129b0bd85';
-
         try {
           let decodedUrl = decodeURIComponent(url);
+          decodedUrl = decodedUrl.replace('redirectAWS/', 'redirectAWS?');
+          
 
           setSetUrl(decodedUrl);
 
